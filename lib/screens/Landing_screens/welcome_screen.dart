@@ -145,7 +145,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                             stops: [0.0, 0.5, 1.0],
                           ).createShader(bounds),
                           child: Text(
-                            'IntelAI MediLocker',
+                            ' MediLocker',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: isTablet ? 38 : 32,
@@ -224,7 +224,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Text(
-                                    'Welcome to IntelAI MediLocker',
+                                    'Welcome to MediLocker',
                                     style: TextStyle(
                                       color: Colors.grey[900],
                                       fontSize: isTablet ? 18 : 16,

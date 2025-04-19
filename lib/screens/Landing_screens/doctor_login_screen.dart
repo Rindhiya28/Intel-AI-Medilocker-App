@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intel/screens/doc_acc.dart';
-import 'package:intel/screens/doc_dashboard.dart';
+import 'package:intel/screens/Landing_screens/doctor_create_acc_screen.dart';
+import 'package:intel/screens/Doctor_screens/doctor_dashboard.dart';
 
 class DoctorLoginScreen extends StatefulWidget {
   const DoctorLoginScreen({Key? key}) : super(key: key);

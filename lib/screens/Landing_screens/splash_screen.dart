@@ -166,7 +166,7 @@ class _SplashScreenState extends State<SplashScreen>
                       duration: const Duration(milliseconds: 500),
                       opacity: _controller.value,
                       child: Text(
-                        'IntelAI MediLocker',
+                        ' MediLocker',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,

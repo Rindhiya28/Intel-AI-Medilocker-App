@@ -1,15 +1,17 @@
 // main.dart
 import 'package:flutter/material.dart';
-import 'package:intel/screens/cre_acc_screen2.dart';
+import 'package:intel/screens/Landing_screens/admin_login_screen.dart';
+import 'package:intel/screens/Landing_screens/splash_screen.dart';
+import 'package:intel/screens/Landing_screens/welcome_screen.dart';
+import 'package:intel/screens/Landing_screens/register_user_selection_screen.dart';
+import 'package:intel/screens/Landing_screens/doctor_create_acc_screen.dart';
+import 'package:intel/screens/Landing_screens/patient_create_acc_screen.dart';
+import 'package:intel/screens/Landing_screens/login_user_selection_screen.dart';
+import 'package:intel/screens/Landing_screens/doctor_login_screen.dart';
+import 'package:intel/screens/Landing_screens/patient_login_screen.dart';
+import 'package:intel/screens/Doctor_screens/doctor_dashboard.dart';
+import 'package:intel/screens/Patient_screens/patient_dashboard.dart';
 
-import 'package:intel/screens/doc_acc.dart';
-import 'package:intel/screens/doc_dashboard.dart';
-import 'package:intel/screens/doctor_login_screen.dart';
-import 'package:intel/screens/pat_acc.dart';
-import 'package:intel/screens/patient_login_screen.dart';
-import 'package:intel/screens/splash_screen.dart';
-import 'package:intel/screens/user_selection_screen.dart';
-import 'package:intel/screens/welcome_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,7 +36,9 @@ class MyApp extends StatelessWidget {
         '/user-selection': (context) => const EnhancedUserSelectionScreen(),
         '/doctor-login': (context) => const DoctorLoginScreen(),
         '/patient-login': (context) => const PatientLoginScreen(),
+        '/admin-login': (context) => const AdminLoginScreen(),
         '/doctor-dashboard': (context) => const DoctorDashboard(),
+        '/patient-dashboard': (context) => const PatientDashboard(),
         '/doctor-create-account': (context) => const DoctorApp(),
         '/patient-create-account': (context) => const PatientApp(),
         '/cre_acc_screen2': (context) => const CreAccScreen2(),
@@ -42,9 +46,12 @@ class MyApp extends StatelessWidget {
         '/pat_acc': (context) => const PatientApp(),
 
 
+
+
       },
     );
   }
+
 }
 
 

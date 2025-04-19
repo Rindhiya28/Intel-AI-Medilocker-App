@@ -3,20 +3,19 @@ import 'package:flutter/services.dart';
 
 class EnhancedUserSelectionScreen extends StatefulWidget {
   const EnhancedUserSelectionScreen({Key? key}) : super(key: key);
-
   @override
   State<EnhancedUserSelectionScreen> createState() =>
       _EnhancedUserSelectionScreenState();
 }
-
 class _EnhancedUserSelectionScreenState
-    extends State<EnhancedUserSelectionScreen> with SingleTickerProviderStateMixin {
+    extends State<EnhancedUserSelectionScreen>
+    with SingleTickerProviderStateMixin {
   bool _isLoading = false;
   bool _isDoctorSelected = false;
   bool _isPatientSelected = false;
+  bool _isAdminSelected = false;
   late AnimationController _controller;
   late Animation<double> _animation;
-
   @override
   void initState() {
     super.initState();
@@ -31,7 +30,8 @@ class _EnhancedUserSelectionScreenState
       vsync: this,
     );
     // Define scale and fade animation with a smoother curve
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic);
+    _animation =
+        CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic);
     // Start the animation
     _controller.forward();
   }
@@ -41,13 +41,13 @@ class _EnhancedUserSelectionScreenState
     _controller.dispose();
     super.dispose();
   }
-
   // Simulate navigation with loading
-  Future<void> _navigateToLogin(String routeName, bool isDoctor) async {
+  Future<void> _navigateToLogin(String routeName, String role) async {
     setState(() {
       _isLoading = true;
-      _isDoctorSelected = isDoctor;
-      _isPatientSelected = !isDoctor;
+      _isDoctorSelected = role == 'doctor';
+      _isPatientSelected = role == 'patient';
+      _isAdminSelected = role == 'admin';
     });
     await Future.delayed(const Duration(milliseconds: 1200));
     if (mounted) {
@@ -56,6 +56,7 @@ class _EnhancedUserSelectionScreenState
         _isLoading = false;
         _isDoctorSelected = false;
         _isPatientSelected = false;
+        _isAdminSelected = false;
       });
     }
   }
@@ -77,14 +78,15 @@ class _EnhancedUserSelectionScreenState
             shape: BoxShape.circle,
           ),
           child: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 18),
+            icon: const Icon(Icons.arrow_back_ios_new,
+                color: Colors.white, size: 18),
             onPressed: () => Navigator.pop(context),
           ),
         ),
         title: Text(
           'Choose Your Role',
           style: TextStyle(
-            fontSize: screenWidth * 0.05, // Dynamic font size
+            fontSize: screenWidth * 0.04, // Dynamic font size
             fontWeight: FontWeight.w600,
             color: Colors.white,
             letterSpacing: 0.5,
@@ -96,16 +98,16 @@ class _EnhancedUserSelectionScreenState
         children: [
           // Background gradient
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  const Color(0xFF3671E9),
-                  const Color(0xFF446BED),
-                  const Color(0xFF7B4AE2),
+                  Color(0xFF3671E9),
+                  Color(0xFF446BED),
+                  Color(0xFF7B4AE2),
                 ],
-                stops: const [0.1, 0.5, 0.9],
+                stops: [0.1, 0.5, 0.9],
               ),
             ),
           ),
@@ -196,12 +198,11 @@ class _EnhancedUserSelectionScreenState
                     opacity: _animation,
                     child: Column(
                       children: [
-
                         SizedBox(height: screenHeight * 0.05),
                         Text(
                           'Welcome',
                           style: TextStyle(
-                            fontSize: screenWidth * 0.08,
+                            fontSize: screenWidth * 0.07,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                             letterSpacing: 0.5,
@@ -222,7 +223,8 @@ class _EnhancedUserSelectionScreenState
                           ),
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(screenWidth * 0.05),
+                            borderRadius:
+                            BorderRadius.circular(screenWidth * 0.05),
                           ),
                           child: Text(
                             'Select your role to continue',
@@ -250,12 +252,14 @@ class _EnhancedUserSelectionScreenState
                           end: Offset.zero,
                         ).animate(CurvedAnimation(
                           parent: _controller,
-                          curve: const Interval(0.1, 0.6, curve: Curves.easeOutCubic),
+                          curve: const Interval(0.1, 0.6,
+                              curve: Curves.easeOutCubic),
                         )),
                         child: FadeTransition(
                           opacity: CurvedAnimation(
                             parent: _controller,
-                            curve: const Interval(0.1, 0.6, curve: Curves.easeIn),
+                            curve:
+                            const Interval(0.1, 0.6, curve: Curves.easeIn),
                           ),
                           child: _buildRoleCard(
                             title: 'Doctor',
@@ -266,7 +270,7 @@ class _EnhancedUserSelectionScreenState
                             isSelected: _isDoctorSelected,
                             onTap: _isLoading
                                 ? null
-                                : () => _navigateToLogin('/doctor-login', true),
+                                : () => _navigateToLogin('/doctor-login', 'doctor'),
                             gradientColors: const [
                               Color(0xFF4694FF),
                               Color(0xFF377AFE),
@@ -284,12 +288,14 @@ class _EnhancedUserSelectionScreenState
                           end: Offset.zero,
                         ).animate(CurvedAnimation(
                           parent: _controller,
-                          curve: const Interval(0.3, 0.8, curve: Curves.easeOutCubic),
+                          curve: const Interval(0.3, 0.8,
+                              curve: Curves.easeOutCubic),
                         )),
                         child: FadeTransition(
                           opacity: CurvedAnimation(
                             parent: _controller,
-                            curve: const Interval(0.3, 0.8, curve: Curves.easeIn),
+                            curve:
+                            const Interval(0.3, 0.8, curve: Curves.easeIn),
                           ),
                           child: _buildRoleCard(
                             title: 'Patient',
@@ -300,11 +306,39 @@ class _EnhancedUserSelectionScreenState
                             isSelected: _isPatientSelected,
                             onTap: _isLoading
                                 ? null
-                                : () => _navigateToLogin('/patient-login', false),
+                                : () =>
+                                _navigateToLogin('/patient-login', 'patient'),
                             gradientColors: const [
                               Color(0xFF8B65D9),
                               Color(0xFF7A4DCE),
                             ],
+                            screenWidth: screenWidth,
+                            screenHeight: screenHeight,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: screenHeight * 0.02),
+                      // Admin button (minimal version)
+                      SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(-0.2, 0),
+                          end: Offset.zero,
+                        ).animate(CurvedAnimation(
+                          parent: _controller,
+                          curve: const Interval(0.5, 1.0,
+                              curve: Curves.easeOutCubic),
+                        )),
+                        child: FadeTransition(
+                          opacity: CurvedAnimation(
+                            parent: _controller,
+                            curve:
+                            const Interval(0.5, 1.0, curve: Curves.easeIn),
+                          ),
+                          child: _buildMinimalAdminButton(
+                            isSelected: _isAdminSelected,
+                            onTap: _isLoading
+                                ? null
+                                : () => _navigateToLogin('/admin-login', 'admin'),
                             screenWidth: screenWidth,
                             screenHeight: screenHeight,
                           ),
@@ -378,7 +412,7 @@ class _EnhancedUserSelectionScreenState
     );
   }
 
-  // Enhanced role card widget
+  // Standard role card widget for Doctor and Patient
   Widget _buildRoleCard({
     required String title,
     required IconData iconData,
@@ -393,7 +427,7 @@ class _EnhancedUserSelectionScreenState
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: screenWidth * 0.8, // Reduced width for vertical stacking
+        width: screenWidth * 0.8,
         padding: EdgeInsets.all(screenWidth * 0.04),
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -504,7 +538,7 @@ class _EnhancedUserSelectionScreenState
                   child: Image.asset(
                     imagePath,
                     height: screenHeight * 0.12,
-                    width: screenWidth * 0.4, // Adjusted width for vertical stacking
+                    width: screenWidth * 0.4,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -542,8 +576,9 @@ class _EnhancedUserSelectionScreenState
                         ? SizedBox(
                       width: screenWidth * 0.04,
                       height: screenWidth * 0.04,
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      child: const CircularProgressIndicator(
+                        valueColor:
+                        AlwaysStoppedAnimation<Color>(Colors.white),
                         strokeWidth: 2,
                       ),
                     )
@@ -579,6 +614,78 @@ class _EnhancedUserSelectionScreenState
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  // Minimal admin button (no image, just text)
+  Widget _buildMinimalAdminButton({
+    required bool isSelected,
+    VoidCallback? onTap,
+    required double screenWidth,
+    required double screenHeight,
+  }) {
+    return Container(
+      width: screenWidth * 0.4, // Much smaller width
+      height: screenHeight * 0.040, // Smaller height
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+          colors: const [
+            Color(0xFF3671E9),
+            Color(0xFF3671E9),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(screenWidth * 0.03),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF24148C).withOpacity(0.4),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(screenWidth * 0.03),
+          onTap: onTap,
+          splashColor: Colors.white.withOpacity(0.1),
+          highlightColor: Colors.white.withOpacity(0.05),
+          child: Center(
+            child: isSelected
+                ? SizedBox(
+              width: screenWidth * 0.03,
+              height: screenWidth * 0.03,
+              child: const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                strokeWidth: 1.5,
+              ),
+            )
+                : Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Continue as Admin',
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.025, // Smaller font
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                SizedBox(width: screenWidth * 0.01),
+                Icon(
+                  Icons.admin_panel_settings_rounded,
+                  color: Colors.white,
+                  size: screenWidth * 0.025, // Smaller icon
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

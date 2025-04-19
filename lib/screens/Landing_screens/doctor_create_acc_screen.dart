@@ -1,8 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intel/screens/doc_acc.dart';
-import 'package:intel/screens/doctor_login_screen.dart';
+import 'package:intel/screens/Landing_screens/doctor_login_screen.dart';
 import 'package:intl/intl.dart';
 
 void main() {
