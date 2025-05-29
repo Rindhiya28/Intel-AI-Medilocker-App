@@ -325,7 +325,7 @@ class _DoctorAppointmentScreenState extends State<DoctorAppointmentScreen> with 
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text(
-                            'Dr.Sarah Johnson, M.D.',
+                            'Dr.Sarah ',
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,

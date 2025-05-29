@@ -85,13 +85,12 @@ class _PatientSummaryScreenState extends State<PatientSummaryScreen> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.186.125:5000/get_summary'),
+        Uri.parse('http://192.168.1.35:5000/get_summary'),
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded', // Use form data
         },
-        body: json.encode({'patient_id': patientId}),
+        body: {'patient_id': patientId}, // Send as form data
       );
-
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {

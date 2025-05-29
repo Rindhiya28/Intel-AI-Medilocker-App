@@ -9,8 +9,8 @@ import 'package:shimmer/shimmer.dart';
 // Constants
 class AppConstants {
   static const String appName = 'Predict Side Effect';
-  static const String apiBaseUrl = 'http://192.168.186.125:5000/check-medicine';
-
+  // Fixed baseUrl - removed the endpoint from the base URL
+  static const String apiBaseUrl = 'http://192.168.1.35:5001/check-medicine';
   // Color Palette
   static const Color primaryColor = Color(0xFF3A6EA5);
   static const Color secondaryColor = Color(0xFF5D9CEC);
@@ -54,12 +54,12 @@ class MedicineSafetyService {
   }) async {
     try {
       final response = await http.post(
-        Uri.parse('${AppConstants.apiBaseUrl}/check-medicine'),
+        Uri.parse(AppConstants.apiBaseUrl), // Removed duplicate /check-medicine
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'patient_id': patientId,
-          'medicine_name': medicineName,
-          'current_diagnosis': currentDiagnosis,
+          'patient_id': patientId.trim(),
+          'medicine_name': medicineName.trim(),
+          'current_diagnosis': currentDiagnosis.trim(),
         }),
       );
 
@@ -67,7 +67,7 @@ class MedicineSafetyService {
         final responseData = jsonDecode(response.body);
         return MedicineSafetyResult.fromJson(responseData['data']);
       } else {
-        throw Exception('Failed to check medicine safety');
+        throw Exception('Failed to check medicine safety: ${response.statusCode} - ${response.body}');
       }
     } catch (e) {
       throw Exception('Network error: $e');
@@ -158,6 +158,7 @@ class _MedicineSafetyCheckScreenState extends State<MedicineSafetyCheckScreen> {
   // State Variables
   bool _isLoading = false;
   MedicineSafetyResult? _safetyResult;
+  String? _errorMessage;
 
   // Form Validation
   String? _validateInput(String? value) {
@@ -174,13 +175,14 @@ class _MedicineSafetyCheckScreenState extends State<MedicineSafetyCheckScreen> {
     setState(() {
       _isLoading = true;
       _safetyResult = null;
+      _errorMessage = null;
     });
 
     try {
       final result = await MedicineSafetyService.checkMedicineSafety(
-        patientId: _patientIdController.text,
-        medicineName: _medicineNameController.text,
-        currentDiagnosis: _currentDiagnosisController.text,
+        patientId: _patientIdController.text.trim(),
+        medicineName: _medicineNameController.text.trim(),
+        currentDiagnosis: _currentDiagnosisController.text.trim(),
       );
 
       setState(() {
@@ -188,10 +190,11 @@ class _MedicineSafetyCheckScreenState extends State<MedicineSafetyCheckScreen> {
         _isLoading = false;
       });
     } catch (e) {
-      _showErrorSnackBar(e.toString());
       setState(() {
         _isLoading = false;
+        _errorMessage = e.toString();
       });
+      _showErrorSnackBar(e.toString());
     }
   }
 
@@ -239,20 +242,24 @@ class _MedicineSafetyCheckScreenState extends State<MedicineSafetyCheckScreen> {
                       .fadeIn(duration: Duration(milliseconds: 600))
                       .moveY(begin: -20, end: 0),
                   const SizedBox(height: 30),
-
                   // Form Card
                   _buildFormCard()
                       .animate()
                       .fadeIn(delay: Duration(milliseconds: 300))
                       .scale(),
                   const SizedBox(height: 24),
-
                   // Submit Button
                   _buildSubmitButton()
                       .animate()
                       .fadeIn(delay: Duration(milliseconds: 500)),
                   const SizedBox(height: 24),
-
+                  // Error Message
+                  if (_errorMessage != null)
+                    _buildErrorMessage(_errorMessage!)
+                        .animate()
+                        .fadeIn()
+                        .scale()
+                        .moveY(begin: 20, end: 0),
                   // Result Display
                   if (_isLoading)
                     _buildLoadingResult()
@@ -270,6 +277,34 @@ class _MedicineSafetyCheckScreenState extends State<MedicineSafetyCheckScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  // Error Message Widget
+  Widget _buildErrorMessage(String message) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 20),
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppConstants.errorColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppConstants.errorColor.withOpacity(0.5)),
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.error_outline, color: AppConstants.errorColor),
+          SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              message,
+              style: GoogleFonts.poppins(
+                color: AppConstants.errorColor,
+                fontSize: 14,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -338,7 +373,6 @@ class _MedicineSafetyCheckScreenState extends State<MedicineSafetyCheckScreen> {
               ),
             ),
             const SizedBox(height: 20),
-
             // Patient ID Input
             _buildTextFormField(
               controller: _patientIdController,
@@ -349,7 +383,6 @@ class _MedicineSafetyCheckScreenState extends State<MedicineSafetyCheckScreen> {
               icon: Icons.person_outline,
             ),
             const SizedBox(height: 20),
-
             // Medicine Name Input
             _buildTextFormField(
               controller: _medicineNameController,
@@ -359,7 +392,6 @@ class _MedicineSafetyCheckScreenState extends State<MedicineSafetyCheckScreen> {
               icon: Icons.medication_outlined,
             ),
             const SizedBox(height: 20),
-
             // Current Diagnosis Input
             _buildTextFormField(
               controller: _currentDiagnosisController,
@@ -508,7 +540,7 @@ class _MedicineSafetyCheckScreenState extends State<MedicineSafetyCheckScreen> {
             keyboardType: keyboardType,
             validator: validator,
             style: GoogleFonts.poppins(
-              fontSize: 19,
+              fontSize: 16,
               color: AppConstants.textPrimaryColor,
             ),
           ),
@@ -598,7 +630,7 @@ class _MedicineSafetyCheckScreenState extends State<MedicineSafetyCheckScreen> {
 
     final String resultTitle = result.isSafe
         ? 'Safe to Take'
-        : 'Predicted side effet';
+        : 'Predicted Side Effect';
 
     return Container(
       decoration: BoxDecoration(

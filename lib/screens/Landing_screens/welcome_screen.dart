@@ -224,7 +224,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Text(
-                                    'Welcome to MediLocker',
+                                    'Welcome to IntelAI-MediLocker',
                                     style: TextStyle(
                                       color: Colors.grey[900],
                                       fontSize: isTablet ? 18 : 16,
