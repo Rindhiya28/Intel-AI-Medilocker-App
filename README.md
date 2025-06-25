@@ -46,5 +46,6 @@
 - ☁️ **Storage** – Firebase Storage , Supabase
 
 ---
-git clone https://github.com/your-username/intelai-medilocker.git
+git clone https://github.com/Rindhiya28/Intel-AI-Medilocker-App.git
+
 
